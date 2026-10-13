@@ -30,7 +30,7 @@
 </head>
 <body class="text-slate-700 flex flex-col min-h-screen select-none">
 
-    <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-pink-100 sticky top-0 z-50">
+    <header class="bg-white/80 backdrop-blur-md shadow-sm border-b border-pink-100 sticky top-0 z-40">
         <div class="max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-3">
                 <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-300 to-purple-300 flex items-center justify-center text-white shadow-md text-2xl">
@@ -44,13 +44,13 @@
                 </div>
             </div>
 
-            <!-- Tabs -->
+            <!-- Tab Switcher -->
             <div class="flex items-center bg-pink-50/80 p-1.5 rounded-2xl border border-pink-100 shadow-inner">
                 <button onclick="switchTab('quiz')" id="tab-quiz" class="px-5 py-2 rounded-xl font-bold text-sm transition-all duration-200 bg-white text-pink-600 shadow-sm">
                     <i class="fa-solid fa-clone mr-2"></i>フラッシュカード
                 </button>
                 <button onclick="switchTab('manage')" id="tab-manage" class="px-5 py-2 rounded-xl font-bold text-sm transition-all duration-200 text-slate-500 hover:text-pink-600">
-                    <i class="fa-solid fa-pen-to-square mr-2"></i>問題の追加・編集
+                    <i class="fa-solid fa-pen-to-square mr-2"></i>問題の追加・修正・CSV
                 </button>
             </div>
         </div>
@@ -76,6 +76,7 @@
                 </div>
             </div>
 
+            <!-- Flashcard Container -->
             <div class="w-full max-w-3xl perspective-1000 h-[380px] sm:h-[420px] mb-6 cursor-pointer" onclick="flipCard()">
                 <div id="flashcard" class="relative w-full h-full duration-500 transform-style-3d shadow-xl rounded-3xl">
                     
@@ -135,6 +136,7 @@
                 </div>
             </div>
 
+            <!-- Start / Next Button -->
             <div class="w-full max-w-3xl flex justify-center">
                 <button onclick="nextQuestion()" class="w-full sm:w-auto px-12 py-4 bg-gradient-to-r from-pink-400 to-purple-400 text-white font-extrabold text-lg rounded-2xl shadow-lg hover:opacity-95 transform active:scale-95 transition-all flex items-center justify-center space-x-3">
                     <i class="fa-solid fa-shuffle"></i>
@@ -152,7 +154,7 @@
                         <i class="fa-solid fa-pen-to-square text-pink-400 mr-3"></i>問題の追加・修正・CSV管理
                     </h2>
                     <p class="text-sm text-slate-400 mt-1">
-                        タブレットが苦手な方でも安心！フォームに入力するか、CSVを貼り付けるだけで簡単に問題を追加できます。
+                        フォームからの追加・修正、またはCSVファイルを選択して一括登録ができます。
                     </p>
                 </div>
 
@@ -192,14 +194,14 @@
                     </div>
                 </div>
 
-                <!-- CSV Import & Export -->
-                <div class="space-y-4">
+                <!-- CSV File Upload & Import Section -->
+                <div class="space-y-4 bg-purple-50/50 p-6 rounded-2xl border border-purple-100">
                     <div class="flex justify-between items-center">
-                        <h3 class="font-extrabold text-purple-600 text-lg flex items-center">
-                            <i class="fa-solid fa-file-csv mr-2"></i>CSVインポート・エクスポート
+                        <h3 class="font-extrabold text-purple-700 text-lg flex items-center">
+                            <i class="fa-solid fa-file-csv mr-2"></i>CSVファイルインポート・エクスポート
                         </h3>
                         <div class="space-x-2">
-                            <button onclick="exportCSV()" class="px-4 py-2 bg-purple-100 text-purple-700 font-bold rounded-xl text-xs hover:bg-purple-200 transition-all">
+                            <button onclick="exportCSV()" class="px-4 py-2 bg-purple-200 text-purple-800 font-bold rounded-xl text-xs hover:bg-purple-300 transition-all">
                                 <i class="fa-solid fa-download mr-1"></i>CSVエクスポート
                             </button>
                             <button onclick="resetDefaultData()" class="px-4 py-2 bg-rose-100 text-rose-700 font-bold rounded-xl text-xs hover:bg-rose-200 transition-all">
@@ -207,16 +209,35 @@
                             </button>
                         </div>
                     </div>
-                    <p class="text-xs text-slate-400">
-                        フォーマット: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">モード(general/student),問題,答え,解説</code>
+                    <p class="text-xs text-slate-500 leading-relaxed">
+                        CSVファイルを選択してインポートできます（フォーマット: <code class="bg-white px-1.5 py-0.5 rounded text-purple-600 font-bold">モード(general/student),問題,答え,解説</code>）
                     </p>
-                    <textarea id="csv-textarea" rows="4" placeholder="general,成人の正常体温の目安は？,36.0〜37.0℃,わきの下での検温が一般的です。&#10;student,心電図のII誘導で最も高い波は？,R波,興奮が心室全体に広がる際の波です。" class="w-full p-4 rounded-2xl border border-slate-200 font-mono text-xs focus:outline-none focus:border-purple-400"></textarea>
-                    <div class="flex justify-end">
-                        <button onclick="importCSV()" class="px-6 py-3 bg-purple-500 text-white font-extrabold rounded-xl shadow-md hover:bg-purple-600 transition-all text-sm flex items-center space-x-2">
+                    
+                    <!-- File Input -->
+                    <div class="flex flex-col sm:flex-row items-center gap-3">
+                        <label class="w-full sm:w-auto flex-1 cursor-pointer bg-white px-4 py-3 rounded-xl border border-purple-200 hover:border-purple-400 transition-all flex items-center justify-center space-x-2 text-sm font-bold text-purple-600 shadow-sm">
+                            <i class="fa-solid fa-folder-open text-lg"></i>
+                            <span id="file-chosen-label">CSVファイルを選択してください</span>
+                            <input type="file" id="csv-file-input" accept=".csv" class="hidden" onchange="handleFileSelect(event)">
+                        </label>
+                        <button onclick="importSelectedCSVFile()" class="w-full sm:w-auto px-6 py-3 bg-purple-600 text-white font-extrabold rounded-xl shadow-md hover:bg-purple-700 transition-all text-sm flex items-center justify-center space-x-2">
                             <i class="fa-solid fa-upload"></i>
-                            <span>CSVを一括インポート</span>
+                            <span>ファイルからインポート</span>
                         </button>
                     </div>
+
+                    <!-- Optional Textarea fallback -->
+                    <details class="text-xs text-slate-400 pt-2">
+                        <summary class="cursor-pointer font-bold hover:text-purple-600">テキストを直接貼り付けてインポートする場合 (詳細)</summary>
+                        <div class="mt-2 space-y-2">
+                            <textarea id="csv-textarea" rows="3" placeholder="general,成人の正常体温の目安は？,36.0〜37.0℃,わきの下での検温が一般的です。" class="w-full p-3 rounded-xl border border-slate-200 font-mono text-xs bg-white focus:outline-none focus:border-purple-400"></textarea>
+                            <div class="flex justify-end">
+                                <button onclick="importTextCSV()" class="px-4 py-2 bg-purple-500 text-white font-extrabold rounded-xl text-xs shadow hover:bg-purple-600 transition-all">
+                                    テキストを一括インポート
+                                </button>
+                            </div>
+                        </div>
+                    </details>
                 </div>
 
                 <!-- Questions List Table -->
@@ -224,14 +245,14 @@
                     <h3 class="font-extrabold text-slate-700 text-lg flex items-center justify-between">
                         <span><i class="fa-solid fa-list mr-2 text-emerald-500"></i>登録済み問題一覧 (<span id="total-questions-count">0</span>問)</span>
                     </h3>
-                    <div class="max-h-80 overflow-y-auto rounded-2xl border border-slate-100">
+                    <div class="max-h-96 overflow-y-auto rounded-2xl border border-slate-100">
                         <table class="w-full text-left border-collapse text-sm">
                             <thead class="bg-slate-50 sticky top-0 text-xs font-bold text-slate-400 border-b border-slate-100">
                                 <tr>
                                     <th class="p-3">モード</th>
                                     <th class="p-3">問題</th>
                                     <th class="p-3">答え</th>
-                                    <th class="p-3 text-right">操作</th>
+                                    <th class="p-3 text-right">操作 (編集 / 削除)</th>
                                 </tr>
                             </thead>
                             <tbody id="questions-table-body" class="divide-y divide-slate-100">
@@ -246,10 +267,51 @@
 
     </main>
 
-    <footer class="bg-white/50 border-t border-pink-100 py-4 text-center text-xs text-slate-400 font-bold">
-        Quiz！聖灯祭！ © 2026 看護フラッシュカード学習アプリ
-    </footer>
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full shadow-2xl space-y-6 border border-pink-100">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 class="text-lg font-extrabold text-slate-800 flex items-center">
+                    <i class="fa-solid fa-pen-to-square text-pink-500 mr-2"></i>問題の修正・編集
+                </h3>
+                <button onclick="closeEditModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 transition-all flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <input type="hidden" id="edit-index">
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">対象モード</label>
+                    <select id="edit-mode" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white font-bold text-sm focus:outline-none focus:border-pink-400">
+                        <option value="general">一般向け</option>
+                        <option value="student">看護学生向け</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">問題文</label>
+                    <input type="text" id="edit-q" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white font-bold text-sm focus:outline-none focus:border-pink-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">答え</label>
+                    <input type="text" id="edit-a" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white font-bold text-sm focus:outline-none focus:border-pink-400">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">解説・根拠</label>
+                    <textarea id="edit-exp" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-200 bg-white text-sm focus:outline-none focus:border-pink-400"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closeEditModal()" class="px-5 py-2.5 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200 transition-all text-sm">
+                    キャンセル
+                </button>
+                <button onclick="saveEditedQuestion()" class="px-6 py-2.5 bg-pink-500 text-white font-extrabold rounded-xl shadow-md hover:bg-pink-600 transition-all text-sm">
+                    修正を保存する
+                </button>
+            </div>
+        </div>
+    </div>
 
+    <!-- Notification Modal -->
     <div id="custom-modal" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl text-center space-y-4 border border-pink-100">
             <div id="modal-icon" class="w-14 h-14 rounded-full bg-pink-100 text-pink-500 flex items-center justify-center text-2xl mx-auto">
@@ -262,6 +324,10 @@
             </button>
         </div>
     </div>
+
+    <footer class="bg-white/50 border-t border-pink-100 py-4 text-center text-xs text-slate-400 font-bold mt-auto">
+        Quiz！聖灯祭！ © 2026 看護フラッシュカード学習アプリ
+    </footer>
 
     <script>
         const defaultQuestions = [
@@ -281,9 +347,10 @@
         let currentMode = 'general';
         let currentQuestion = null;
         let isFlipped = false;
+        let selectedFileContent = null;
 
         function initStorage() {
-            const saved = localStorage.getItem('seitousai_quiz_questions_v2');
+            const saved = localStorage.getItem('seitousai_quiz_questions_v3');
             if (saved) {
                 try {
                     questions = JSON.parse(saved);
@@ -297,7 +364,7 @@
         }
 
         function saveQuestions() {
-            localStorage.setItem('seitousai_quiz_questions_v2', JSON.stringify(questions));
+            localStorage.setItem('seitousai_quiz_questions_v3', JSON.stringify(questions));
             updateQuestionsTable();
         }
 
@@ -352,7 +419,7 @@
             }
 
             if (filtered.length === 0) {
-                showModal('お知らせ', '選択されたモードに問題がありません。「問題の追加・編集」から問題を追加してください。', 'fa-solid fa-triangle-exclamation');
+                showModal('お知らせ', '選択されたモードに問題がありません。「問題の追加・修正」から問題を追加してください。', 'fa-solid fa-triangle-exclamation');
                 return;
             }
 
@@ -407,6 +474,43 @@
             saveQuestions();
         }
 
+        function openEditModal(index) {
+            const item = questions[index];
+            if (!item) return;
+
+            document.getElementById('edit-index').value = index;
+            document.getElementById('edit-mode').value = item.mode;
+            document.getElementById('edit-q').value = item.q;
+            document.getElementById('edit-a').value = item.a;
+            document.getElementById('edit-exp').value = item.exp || '';
+
+            document.getElementById('edit-modal').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal').classList.add('hidden');
+        }
+
+        function saveEditedQuestion() {
+            const index = parseInt(document.getElementById('edit-index').value);
+            const mode = document.getElementById('edit-mode').value;
+            const q = document.getElementById('edit-q').value.trim();
+            const a = document.getElementById('edit-a').value.trim();
+            const exp = document.getElementById('edit-exp').value.trim();
+
+            if (!q || !a) {
+                showModal('入力エラー', '問題文と答えは必須項目です。', 'fa-solid fa-circle-exclamation');
+                return;
+            }
+
+            if (index >= 0 && index < questions.length) {
+                questions[index] = { mode, q, a, exp: exp || '特になし' };
+                saveQuestions();
+                closeEditModal();
+                showModal('完了', '問題の内容を修正しました！', 'fa-solid fa-circle-check');
+            }
+        }
+
         function updateQuestionsTable() {
             const tbody = document.getElementById('questions-table-body');
             document.getElementById('total-questions-count').textContent = questions.length;
@@ -423,14 +527,80 @@
                     </td>
                     <td class="p-3 font-bold text-slate-800 max-w-xs truncate">${item.q}</td>
                     <td class="p-3 text-slate-600 max-w-xs truncate">${item.a}</td>
-                    <td class="p-3 text-right">
-                        <button onclick="deleteQuestion(${index})" class="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all">
-                            <i class="fa-solid fa-trash-can text-xs"></i>
+                    <td class="p-3 text-right space-x-1">
+                        <button onclick="openEditModal(${index})" class="px-2.5 py-1.5 rounded-xl bg-sky-50 text-sky-600 hover:bg-sky-100 transition-all font-bold text-xs" title="修正">
+                            <i class="fa-solid fa-pen mr-1"></i>修正
+                        </button>
+                        <button onclick="deleteQuestion(${index})" class="px-2.5 py-1.5 rounded-xl bg-rose-50 text-rose-500 hover:bg-rose-100 transition-all font-bold text-xs" title="削除">
+                            <i class="fa-solid fa-trash-can mr-1"></i>削除
                         </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            document.getElementById('file-chosen-label').textContent = file.name;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                selectedFileContent = e.target.result;
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        function importSelectedCSVFile() {
+            if (!selectedFileContent) {
+                showModal('エラー', 'CSVファイルが選択されていません。ファイルを選択してください。', 'fa-solid fa-circle-exclamation');
+                return;
+            }
+            parseAndAddCSV(selectedFileContent);
+        }
+
+        function importTextCSV() {
+            const text = document.getElementById('csv-textarea').value.trim();
+            if (!text) {
+                showModal('入力エラー', 'CSVテキストを入力してください。', 'fa-solid fa-circle-exclamation');
+                return;
+            }
+            parseAndAddCSV(text);
+            document.getElementById('csv-textarea').value = '';
+        }
+
+        function parseAndAddCSV(csvText) {
+            const lines = csvText.split(/\r\n|\n/);
+            let addedCount = 0;
+
+            lines.forEach(line => {
+                if (!line.trim()) return;
+                // Basic CSV parser supporting quotes
+                const parts = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || line.split(',');
+                if (parts.length >= 3) {
+                    let mode = parts[0].trim().toLowerCase().replace(/"/g, '');
+                    if (mode !== 'general' && mode !== 'student') mode = 'general';
+                    const q = parts[1].trim().replace(/^"|"$/g, '').replace(/""/g, '"');
+                    const a = parts[2].trim().replace(/^"|"$/g, '').replace(/""/g, '"');
+                    const exp = parts[3] ? parts[3].trim().replace(/^"|"$/g, '').replace(/""/g, '"') : '特になし';
+
+                    if (q && a) {
+                        questions.push({ mode, q, a, exp });
+                        addedCount++;
+                    }
+                }
+            });
+
+            if (addedCount > 0) {
+                saveQuestions();
+                selectedFileContent = null;
+                document.getElementById('file-chosen-label').textContent = 'CSVファイルを選択してください';
+                document.getElementById('csv-file-input').value = '';
+                showModal('インポート成功', `${addedCount}件の問題を追加しました！`, 'fa-solid fa-circle-check');
+            } else {
+                showModal('エラー', '有効な形式で読み込めませんでした。フォーマットを確認してください。', 'fa-solid fa-triangle-exclamation');
+            }
         }
 
         function exportCSV() {
@@ -449,41 +619,6 @@
             a.download = 'seitousai_quiz_questions.csv';
             a.click();
             URL.revokeObjectURL(url);
-        }
-
-        function importCSV() {
-            const text = document.getElementById('csv-textarea').value.trim();
-            if (!text) {
-                showModal('入力エラー', 'CSVテキストを入力してください。', 'fa-solid fa-circle-exclamation');
-                return;
-            }
-
-            const lines = text.split('\n');
-            let addedCount = 0;
-
-            lines.forEach(line => {
-                const parts = line.split(',');
-                if (parts.length >= 3) {
-                    let mode = parts[0].trim().toLowerCase();
-                    if (mode !== 'general' && mode !== 'student') mode = 'general';
-                    const q = parts[1].trim().replace(/^"|"$/g, '');
-                    const a = parts[2].trim().replace(/^"|"$/g, '');
-                    const exp = parts[3] ? parts[3].trim().replace(/^"|"$/g, '') : '特になし';
-
-                    if (q && a) {
-                        questions.push({ mode, q, a, exp });
-                        addedCount++;
-                    }
-                }
-            });
-
-            if (addedCount > 0) {
-                saveQuestions();
-                document.getElementById('csv-textarea').value = '';
-                showModal('インポート成功', `${addedCount}件の問題を追加しました！`, 'fa-solid fa-circle-check');
-            } else {
-                showModal('エラー', '有効な形式で読み込めませんでした。フォーマットを確認してください。', 'fa-solid fa-triangle-exclamation');
-            }
         }
 
         function resetDefaultData() {
